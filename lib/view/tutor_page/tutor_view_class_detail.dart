@@ -23,9 +23,10 @@ class _ViewClassDetailState extends State<ViewClassDetail> {
   String endTimeChanged = '';
   String endTimeToValidate = '';
   String endTimeSaved = '';
+  String date = "";
   String title = "";
   String description = "";
-  String date = "";
+  bool firstTime = true;
 
   // ignore: unused_element
   _startDate(BuildContext context) async {
@@ -87,12 +88,19 @@ class _ViewClassDetailState extends State<ViewClassDetail> {
     date = startDateTimeStr[0];
     var startTimeStr = startDateTimeStr[1].split(":");
     String startTime = startTimeStr[0] + ":" + startTimeStr[1];
-    startTimeChanged = startTime;
+
     var endDateTimeStr =
         data_from_course_detail["endTime"].toString().split("T");
     var endTimeStr = endDateTimeStr[1].split(":");
     String endTime = endTimeStr[0] + ":" + endTimeStr[1];
-    endTimeChanged = endTime;
+
+    if (firstTime) {
+      startTimeChanged = startTime;
+      endTimeChanged = endTime;
+      title = data_from_course_detail["title"];
+      description = data_from_course_detail["description"];
+      firstTime = false;
+    }
 
     return Material(
       type: MaterialType.transparency,
@@ -256,7 +264,9 @@ class _ViewClassDetailState extends State<ViewClassDetail> {
                 description,
                 date + "T" + startTimeChanged + ":00",
                 date + "T" + endTimeChanged + ":00",
-                true);
+                true,
+                data_from_course_detail["studentId"],
+                data_from_course_detail["tutorId"]);
             return secondAlert;
           },
         );
@@ -315,7 +325,9 @@ class _ViewClassDetailState extends State<ViewClassDetail> {
                 description,
                 date + "T" + startTimeChanged + ":00",
                 date + "T" + endTimeChanged + ":00",
-                false);
+                false,
+                data_from_course_detail["studentId"],
+                data_from_course_detail["tutorId"]);
             return secondAlert;
           },
         );

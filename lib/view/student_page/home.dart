@@ -10,6 +10,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:tutor_helper/view/student_page/profile.dart';
 import 'package:tutor_helper/view/student_page/view_course_detail.dart';
 import 'package:tutor_helper/api/api_management.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class StudentHomePage extends StatefulWidget {
   const StudentHomePage({Key? key}) : super(key: key);
@@ -207,6 +208,26 @@ class _StudentHomePageState extends State<StudentHomePage> {
                                                 borderRadius:
                                                     BorderRadius.circular(15)),
                                             child: ListTile(
+                                              leading: TextButton(
+                                                  onPressed: () {
+                                                    var baseUrl =
+                                                        course.linkUrl;
+                                                    if (!baseUrl
+                                                        .contains("https:/")) {
+                                                      var meetUrl = "https://" +
+                                                          course.linkUrl;
+                                                      var uri =
+                                                          Uri.dataFromString(
+                                                              meetUrl);
+                                                      var uuid = uri.path;
+
+                                                      var realPath =
+                                                          uuid.substring(1);
+
+                                                      launch(realPath);
+                                                    }
+                                                  },
+                                                  child: const Text("Meet")),
                                               title: Text(course.title),
                                               subtitle:
                                                   Text(course.description),
@@ -223,6 +244,8 @@ class _StudentHomePageState extends State<StudentHomePage> {
                                                           course.courseId,
                                                       "courseTitle":
                                                           course.title,
+                                                      "tutorId": tutor.tutorId,
+                                                      "tutor": tutor,
                                                     });
                                               },
                                             ),

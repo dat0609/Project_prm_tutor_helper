@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -45,6 +44,7 @@ class _TutorLoginPageState extends State<TutorLoginPage> {
     // log(response.statusCode.toString());
     if (response.statusCode == 200) {
       storage.write(key: "database", value: response.body);
+      //log(response.body);
       Get.offAll(() => const TutorManagement());
     } else if (response.statusCode == 500) {
       Alert(

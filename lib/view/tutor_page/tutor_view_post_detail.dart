@@ -144,7 +144,7 @@ class _TutorViewPostDetailState extends State<TutorViewPostDetail> {
     Widget acceptButton = TextButton(
       child: const Text("Accept"),
       onPressed: () {
-        log(datafromPost["studentId"].toString());
+        log(datafromPost["gradeId"].toString());
         API_Management().acceptTutorRequest(
             datafromPost["token"],
             datafromPost["tutorId"],

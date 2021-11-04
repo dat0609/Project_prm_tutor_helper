@@ -17,6 +17,10 @@ class _TutorProfilePageState extends State<TutorProfilePage> {
   String username = "";
   String email = "";
   String phone = "";
+  String image = "";
+  int tutorId = 0;
+  String token = "";
+
   final storage = const FlutterSecureStorage();
 
   Future<String?> _getData() async {
@@ -55,6 +59,10 @@ class _TutorProfilePageState extends State<TutorProfilePage> {
                         email = data["data"]['email'];
                         username = tutorData.data!.data.fullName;
                         phone = tutorData.data!.data.phoneNumber;
+                        image = imagePath;
+                        token = data["data"]['jwtToken'];
+                        tutorId = data["data"]['tutorId'];
+
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -112,7 +120,9 @@ class _TutorProfilePageState extends State<TutorProfilePage> {
                                     enabled: false,
                                     initialValue: email,
                                     onChanged: (value) {
-                                      email = value;
+                                      setState(() {
+                                        email = value;
+                                      });
                                     },
                                   ),
                                   const SizedBox(
@@ -124,13 +134,15 @@ class _TutorProfilePageState extends State<TutorProfilePage> {
                                         fontSize: 17,
                                         fontWeight: FontWeight.w900),
                                   ),
-                                  TextFormField(
-                                    keyboardType: TextInputType.name,
-                                    initialValue: username,
-                                    onChanged: (value) {
-                                      username = value;
-                                    },
-                                  ),
+                                  // TextFormField(
+                                  //   keyboardType: TextInputType.name,
+                                  //   initialValue: username,
+                                  //   onChanged: (value) {
+                                  //     setState(() {
+                                  //       username = value;
+                                  //     });
+                                  //   },
+                                  // ),
                                   const SizedBox(
                                     height: 10,
                                   ),
@@ -168,12 +180,13 @@ class _TutorProfilePageState extends State<TutorProfilePage> {
               },
             ),
             const SizedBox(
-              height: 200,
+              height: 20,
             ),
             ElevatedButton(
                 onPressed: () {
-                  log(username);
-                  log(phone);
+                  // log(imagePath);
+                  // API_Management().updateTutor(
+                  //     token, username, email, phone, image, tutorId);
                 },
                 child: const Text(
                   "Update",

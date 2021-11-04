@@ -223,13 +223,15 @@ class _TutorViewPostState extends State<TutorViewPost> {
                                           ? "Waiting tutor"
                                           : data.status == "Accepted"
                                               ? "Posted"
-                                              : "",
+                                              : "Rejected",
                                   style: TextStyle(
                                     color: data.status == "Pending"
                                         ? Colors.blue
                                         : data.status == "Approved"
                                             ? Colors.green
-                                            : Colors.red,
+                                            : data.status == "Accepted"
+                                                ? Colors.blueGrey
+                                                : Colors.red,
                                   ),
                                 ),
                                 onTap: () {

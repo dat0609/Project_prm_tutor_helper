@@ -120,6 +120,11 @@ class _TutorViewCourseDetailState extends State<TutorViewCourseDetail> {
                   fontWeight: FontWeight.w400),
             ),
           ),
+          // Column(
+          //   children: [
+          //     TextButton(onPressed: () {}, child: Text("data")),
+          //   ],
+          // )
         ],
       ),
     );
@@ -152,13 +157,14 @@ class _TutorViewCourseDetailState extends State<TutorViewCourseDetail> {
                                 data_from_course_page["courseid"] &&
                             classData[index].status == true) {
                           return buildClassItem(
-                              classData[index].courseId,
-                              classData[index].title,
-                              classData[index].description,
-                              classData[index].startTime.toString(),
-                              classData[index].endTime.toString(),
-                              classData[index].id,
-                              data_from_course_page["token"]);
+                            classData[index].courseId,
+                            classData[index].title,
+                            classData[index].description,
+                            classData[index].startTime.toString(),
+                            classData[index].endTime.toString(),
+                            classData[index].id,
+                            data_from_course_page["token"],
+                          );
                         } else {
                           return const Visibility(
                             child: Text(""),
@@ -238,7 +244,7 @@ class _TutorViewCourseDetailState extends State<TutorViewCourseDetail> {
   }
 
   Container buildClassItem(int courseid, String title, String description,
-      String startTime, String endTime, int classid, String token) {
+      String startTime, String endTime, int classId, String token) {
     var startTimeStr = startTime.split("T");
     String date = startTimeStr[0];
     var fromTimeStr = startTimeStr[1].split(":");
@@ -310,8 +316,10 @@ class _TutorViewCourseDetailState extends State<TutorViewCourseDetail> {
                       "description": description,
                       "startTime": startTime,
                       "endTime": endTime,
-                      "classid": classid,
+                      "classid": classId,
                       "token": token,
+                      "studentId": data_from_course_page["studentid"],
+                      "tutorId": data_from_course_page["tutorid"],
                     });
                   },
                   icon: const Icon(

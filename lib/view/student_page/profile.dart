@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tutor_helper/api/api_management.dart';
 import 'package:tutor_helper/model/students.dart';
@@ -77,7 +79,9 @@ class _StudentEditProfileState extends State<StudentEditProfile> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.black),
-            onPressed: () {
+            onPressed: () async {
+              await GoogleSignIn().disconnect();
+              await FirebaseAuth.instance.signOut();
               _logOut();
               Get.offAll(() => const LoginPage());
             },
@@ -187,8 +191,8 @@ class _StudentEditProfileState extends State<StudentEditProfile> {
                         _phone = phoneController.text;
                       });
 
-                      API_Management().updateStudent(
-                          studentId, email, _name, _phone, 2, 2, image, tokenHome);
+                      API_Management().updateStudent(studentId, email, _name,
+                          _phone, 2, 2, image, tokenHome);
                       Fluttertoast.showToast(
                           msg: "Account has been updated",
                           toastLength: Toast.LENGTH_SHORT,

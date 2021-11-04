@@ -42,10 +42,10 @@ class _StudentViewPostDetailState extends State<StudentViewPostDetail> {
         IconButton(
           icon: const Icon(Icons.delete),
           onPressed: () {
-            if (status == "Pending") {
+            //pending or waiting
+            if (status == "Pending" || status == "Approved") {
               API_Management().deletePost(token, postId, title, description,
                   studentId, gradeId, subjectId);
-
               Get.back();
             }
           },

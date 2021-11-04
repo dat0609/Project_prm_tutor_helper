@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:tutor_helper/api/api_management.dart';
 import 'package:tutor_helper/model/tutor_courses.dart';
 import 'package:tutor_helper/presenter/date_time_format.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tutor_helper/view/tutor_page/tutor_view_course_detail.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TutorCoursePage extends StatefulWidget {
   const TutorCoursePage({Key? key}) : super(key: key);
@@ -243,8 +246,8 @@ class _TutorCoursePageState extends State<TutorCoursePage> {
     );
   }
 
-  Container buildClassItem(String title, String description, int courseid,
-      int tutorid, int tutorrequestid, int studentid, String token) {
+  Container buildClassItem(String title, String description, int courseId,
+      int tutorId, int tutorRequestId, int studentId, String token) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15, right: 7, left: 5),
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
@@ -284,29 +287,114 @@ class _TutorCoursePageState extends State<TutorCoursePage> {
                   overflow: TextOverflow.clip,
                   style: const TextStyle(color: Colors.black, fontSize: 13),
                 ),
-              )
+              ),
             ],
           ),
-          Row(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
                 onPressed: () {
                   Get.to(() => const TutorViewCourseDetail(), arguments: {
                     "title": title,
                     "description": description,
-                    "courseid": courseid,
-                    "tutorid": tutorid,
-                    "tutorrequestid": tutorrequestid,
-                    "studentid": studentid,
+                    "courseid": courseId,
+                    "tutorid": tutorId,
+                    "tutorrequestid": tutorRequestId,
+                    "studentid": studentId,
                     "token": token,
                   });
                 },
                 icon: const Icon(Icons.arrow_right_alt_rounded),
+              ),
+              IconButton(
+                onPressed: () {
+                  //API_Management().updateCourse();
+                  _showModal(token, courseId, title, description, tutorId,
+                      tutorRequestId, studentId);
+                },
+                icon: const Icon(Icons.link_rounded),
               ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  void _showModal(var token, int courseId, String title, String description,
+      int tutorId, int tutorRequestId, int studentId) {
+    var linkUrl = "";
+    showMaterialModalBottomSheet(
+        backgroundColor: Colors.blueGrey,
+        context: context,
+        builder: (context) {
+          return Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Share this link to your students",
+                style: TextStyle(fontSize: 20),
+              ),
+              TextField(
+                decoration: const InputDecoration(
+                  hintText: "Enter Link",
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    linkUrl = value;
+                  });
+                },
+              ),
+              IconButton(
+                  onPressed: () {
+                    var uri = Uri.dataFromString('https://meet.google.com');
+                    var uuid = uri.path;
+
+                    var realPath = uuid.substring(1);
+                    //log(realPath);
+                    launch(realPath);
+                  },
+                  icon: const Icon(Icons.meeting_room_outlined)),
+              TextButton(
+                  onPressed: () {
+                    if (linkUrl.isEmpty) {
+                      Get.snackbar("Error", "Please enter a link",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                          snackPosition: SnackPosition.BOTTOM);
+                    } else if (!linkUrl.startsWith("https://")) {
+                      Get.snackbar("Error", "Please enter a valid link",
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                          snackPosition: SnackPosition.BOTTOM);
+                    } else {
+                      API_Management().updateCourse(
+                          token,
+                          courseId,
+                          title,
+                          description,
+                          linkUrl,
+                          tutorId,
+                          tutorRequestId,
+                          studentId);
+                      Fluttertoast.showToast(
+                          msg: "Create meet link success",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.blueGrey,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                      Get.back();
+                    }
+                  },
+                  child: const Text("Create",
+                      style: TextStyle(color: Colors.black))),
+            ],
+          ));
+        });
   }
 }
